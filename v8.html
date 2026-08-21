@@ -129,6 +129,8 @@
       <div class="body" id="m-body"></div>
       <div class="filebar"><span>CASE: <b id="m-case">01</b></span><span id="m-time"></span></div>
     </div>
+    <audio id="sfx-typing" src="sfx/typing.mp3" preload="auto"></audio>
+    <audio id="sfx-chime" src="sfx/chime.mp3" preload="auto"></audio>
   </div>
   <div class="foot">Volume 8 &middot; <b>Operation Green-White-Green</b> &middot; The Puzzle Bureau</div>
 </div>
@@ -230,6 +232,16 @@
     }, 1000);
   }
 
+  function playSfx(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    try {
+      el.currentTime = 0;
+      var p = el.play();
+      if (p && p.catch) p.catch(function(){ /* autoplay blocked — silent is fine */ });
+    } catch(e) { /* ignore */ }
+  }
+
   function boot(){
     var hash = (location.hash || '').replace('#','').trim();
     var d = DATA[hash] || DATA.case1;
@@ -246,10 +258,12 @@
 
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var delay = reduced ? 0 : 1700;
+    if (!reduced) playSfx('sfx-typing');
     setTimeout(function(){
       document.getElementById('boot').style.display = 'none';
       var msg = document.getElementById('msg');
       msg.style.display = 'block';
+      playSfx('sfx-chime');
       if (d.countdown) runCountdown(document.getElementById('m-countdown'), d.countdown.seconds, d.countdown.label);
       typewrite(document.getElementById('m-body'), d.body);
     }, delay);
