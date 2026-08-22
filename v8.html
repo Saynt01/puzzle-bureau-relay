@@ -114,7 +114,15 @@
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
   <div class="topline"><span><span class="dot"></span>CHANNEL 8</span><b>NIGHTJAR BUREAU · SIGNAL RELAY</b></div>
   <div class="card">
-    <div id="boot">
+    <div id="gate" style="text-align:center; padding:18px 4px;">
+      <svg width="46" height="46" viewBox="0 0 100 100" style="margin-bottom:10px; opacity:.85;">
+        <polygon points="50,4 61,38 97,38 68,59 79,94 50,73 21,94 32,59 3,38 39,38" fill="none" stroke="#d4af62" stroke-width="5"/>
+      </svg>
+      <div class="kicker" style="margin-bottom:8px;">INCOMING TRANSMISSION</div>
+      <div style="font-size:13px; color:var(--ink-dim); margin-bottom:18px; line-height:1.6;">A signal is waiting. Tap to decrypt it.</div>
+      <button id="gate-btn" style="font-family:'Bebas Neue',sans-serif; letter-spacing:.14em; font-size:18px; color:var(--void); background:var(--signal); border:none; border-radius:6px; padding:12px 28px; cursor:pointer; box-shadow:0 0 16px rgba(94,230,168,.4);">TAP TO DECRYPT</button>
+    </div>
+    <div id="boot" style="display:none;">
       <div class="boot-line b1">&gt; establishing uplink&hellip;</div>
       <div class="boot-line b2">&gt; verifying agent proximity&hellip;</div>
       <div class="boot-line b3">&gt; decrypting transmission&hellip;</div>
@@ -268,7 +276,24 @@
       typewrite(document.getElementById('m-body'), d.body);
     }, delay);
   }
-  boot();
+  function unlockAudio(){
+    ['sfx-typing','sfx-chime'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var p;
+      try { p = el.play(); } catch(e) { return; }
+      if (p && p.then) {
+        p.then(function(){ el.pause(); el.currentTime = 0; }).catch(function(){});
+      }
+    });
+  }
+
+  document.getElementById('gate-btn').addEventListener('click', function(){
+    unlockAudio();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('boot').style.display = 'block';
+    boot();
+  });
   window.addEventListener('hashchange', function(){ location.reload(); });
 })();
 </script>
